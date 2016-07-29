@@ -7,10 +7,8 @@ import org.xml.sax.SAXException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
@@ -20,13 +18,20 @@ public class StackOverFlowJavaPostsFilter {
 
     public static final Logger LOGGER = Logger.getLogger(StackOverFlowJavaPostsFilter.class.getName());
 
-    public static void main(String args[]) {
+    public static Properties applicationProperties = new Properties();
 
-        PrintWriter javaPostsWriter = null;
+    public static PrintWriter javaPostsWriter = null;
+
+    public static void main(String args[]) {
+        JavaPostsFilter javaPostsFilter = new JavaPostsFilter();
+        JavaPostsFileWriter javaPostsFileWriter = new JavaPostsFileWriter();
+
         try {
-            javaPostsWriter = new PrintWriter("/home/ramakrishnas/Desktop/StackOverFlowJavaPostsFilter/" +
-                    "StackOverFlowJavaPosts.txt");
-            File stackOverFlowPostsFolder = new File("/home/ramakrishnas/Desktop/StackOverFlowPosts");
+            System.out.println(new File(".").getAbsolutePath());
+            applicationProperties.load(new FileInputStream("application.properties"));
+            File stackOverFlowPostsFolder = new File(applicationProperties.getProperty("stackOverFlowPostsDirectory"));
+            StackOverFlowJavaPostsFilter.javaPostsWriter = new PrintWriter(StackOverFlowJavaPostsFilter.applicationProperties.
+                    getProperty("filteredPostsFilePath"));
 
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
@@ -37,15 +42,11 @@ public class StackOverFlowJavaPostsFilter {
                 postsDocument.getDocumentElement().normalize();
                 NodeList postsDetails = postsDocument.getElementsByTagName("row");
                 for (int postDetailsIndex = 0; postDetailsIndex < postsDetails.getLength(); postDetailsIndex++) {
-
                     Node post = postsDetails.item(postDetailsIndex);
                     if (post.getNodeType() == Node.ELEMENT_NODE) {
                         Element postElement = (Element) post;
-                        String postTags = postElement.getAttribute("Tags").toString();
-                        String postTitle = postElement.getAttribute("Title").toString();
-                        if (postTags.contains("<java>") && (postTitle.toLowerCase().contains("how")))
-                            javaPostsWriter.println("PostId: " + postElement.getAttribute("Id") + "\n" + "Title : " +
-                                    postElement.getAttribute("Title").toString() + "\n");
+                        if (javaPostsFilter.isJavaPost(postElement))
+                            javaPostsFileWriter.writeToFile(postElement, javaPostsWriter);
                     }
                 }
             }
