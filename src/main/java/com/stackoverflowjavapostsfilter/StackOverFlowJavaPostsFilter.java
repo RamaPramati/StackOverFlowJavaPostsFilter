@@ -1,3 +1,5 @@
+package com.stackoverflowjavapostsfilter;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -16,15 +18,15 @@ import java.util.logging.Logger;
  */
 public class StackOverFlowJavaPostsFilter {
 
-    public static final Logger LOGGER = Logger.getLogger(StackOverFlowJavaPostsFilter.class.getName());
+    private static final Logger LOGGER = Logger.getLogger(StackOverFlowJavaPostsFilter.class.getName());
 
-    public static Properties applicationProperties = new Properties();
+    static Properties applicationProperties = new Properties();
 
-    public static PrintWriter javaPostsWriter = null;
+    private static PrintWriter javaPostsWriter = null;
+    static boolean isRatelimitReached = false;
 
     public static void main(String args[]) {
         JavaPostsFilter javaPostsFilter = new JavaPostsFilter();
-        JavaPostsFileWriter javaPostsFileWriter = new JavaPostsFileWriter();
 
         try {
             System.out.println(new File(".").getAbsolutePath());
@@ -36,17 +38,26 @@ public class StackOverFlowJavaPostsFilter {
             DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
             File[] postsFiles = stackOverFlowPostsFolder.listFiles();
-            for (int postsFilesIndex = 0; postsFilesIndex < postsFiles.length; postsFilesIndex++) {
 
-                Document postsDocument = dBuilder.parse(postsFiles[postsFilesIndex]);
+            if (postsFiles == null) {
+                LOGGER.info("No files in the given directory");
+                return;
+            }
+
+            for (File postsFile : postsFiles) {
+                Document postsDocument = dBuilder.parse(postsFile);
                 postsDocument.getDocumentElement().normalize();
                 NodeList postsDetails = postsDocument.getElementsByTagName("row");
+
                 for (int postDetailsIndex = 0; postDetailsIndex < postsDetails.getLength(); postDetailsIndex++) {
+                    if (isRatelimitReached) {
+                        System.exit(1);
+                    }
                     Node post = postsDetails.item(postDetailsIndex);
                     if (post.getNodeType() == Node.ELEMENT_NODE) {
                         Element postElement = (Element) post;
-                        if (javaPostsFilter.isJavaPost(postElement))
-                            javaPostsFileWriter.writeToFile(postElement, javaPostsWriter);
+                        if ((javaPostsFilter.isJavaPost(postElement)))
+                            JavaPostsFileWriter.writeToFile(postElement, javaPostsWriter);
                     }
                 }
             }

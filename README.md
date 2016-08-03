@@ -1,1 +1,1 @@
-# StackOverFlowJavaPostsFilter
+# com.stackoverflowjavapostsfilter.StackOverFlowJavaPostsFilter

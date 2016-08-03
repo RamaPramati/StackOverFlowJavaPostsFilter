@@ -1,3 +1,5 @@
+package com.stackoverflowjavapostsfilter;
+
 import org.w3c.dom.Element;
 
 /**
