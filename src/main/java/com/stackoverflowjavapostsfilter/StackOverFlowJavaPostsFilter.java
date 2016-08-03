@@ -29,7 +29,6 @@ public class StackOverFlowJavaPostsFilter {
         JavaPostsFilter javaPostsFilter = new JavaPostsFilter();
 
         try {
-            System.out.println(new File(".").getAbsolutePath());
             applicationProperties.load(new FileInputStream("application.properties"));
             File stackOverFlowPostsFolder = new File(applicationProperties.getProperty("stackOverFlowPostsDirectory"));
             StackOverFlowJavaPostsFilter.javaPostsWriter = new PrintWriter(StackOverFlowJavaPostsFilter.applicationProperties.

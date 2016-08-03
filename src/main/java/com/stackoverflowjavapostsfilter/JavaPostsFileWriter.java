@@ -3,7 +3,6 @@ package com.stackoverflowjavapostsfilter;
 import org.json.JSONObject;
 import org.w3c.dom.Element;
 
-import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
@@ -12,7 +11,7 @@ import java.util.List;
  */
 class JavaPostsFileWriter {
 
-    static void writeToFile(Element postElement, PrintWriter javaPostsWriter) throws IOException {
+    static void writeToFile(Element postElement, PrintWriter javaPostsWriter) {
         List<String> requiredAnswers = StackOverFlowJavaPostsFilterHelper.getAcceptedAnswerForPost(postElement.
                 getAttribute("Id"));
 

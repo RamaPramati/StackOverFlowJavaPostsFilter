@@ -24,7 +24,6 @@ class StackOverFlowJavaPostsFilterHelper {
     private static GetMethod getResponseAsString(String url) {
         GetMethod method = new GetMethod(url);
         try {
-            method.setRequestHeader("Accept-Encoding", "false");
             client.executeMethod(method);
         } catch (IOException ioException) {
             LOGGER.info("IO Exception " + ioException.getMessage());
