@@ -1,33 +1,65 @@
 package com.stackoverflowjavapostsfilter;
 
-import org.json.JSONObject;
+import javafx.util.Pair;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 import org.w3c.dom.Element;
 
-import java.io.PrintWriter;
-import java.util.List;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by ramakrishnas on 29/7/16.
  */
 class JavaPostsFileWriter {
 
-    static void writeToFile(Element postElement, PrintWriter javaPostsWriter) {
-        List<String> requiredAnswers = StackOverFlowJavaPostsFilterHelper.getAcceptedAnswerForPost(postElement.
-                getAttribute("Id"));
+    static Map<String, String> javaPostsAnswers = new HashMap<String, String>();
+    static Map<String, Pair<String, Integer>> javaMostVotedAnswers = new HashMap<String, Pair<String, Integer>>();
+
+    static void writeToFile(Element postElement, int postTypeId) {
 
         JSONObject javaPost = new JSONObject();
-        javaPost.put("Post Id", postElement.getAttribute("Id"));
-        javaPost.put("Title", postElement.getAttribute("Title"));
-        javaPost.put("Descrpition", postElement.getAttribute("Body"));
+        if (postTypeId == 1) {
+            javaPost.put("Post Id", postElement.getAttribute("Id"));
+            javaPost.put("Title", postElement.getAttribute("Title"));
+            javaPost.put("Description", postElement.getAttribute("Body"));
+            javaPost.put("AcceptedAnswerId", postElement.getAttribute("AcceptedAnswerId"));
+            StackOverFlowJavaPostsFilter.javaPostsQuestionsWriter.println(javaPost.toString() + ",");
+        } else if (postTypeId == 2) {
+            javaPostsAnswers.put(postElement.getAttribute("Id"), postElement.getAttribute("Body"));
+        } else {
+            if (javaMostVotedAnswers.containsKey(postElement.getAttribute("ParentId"))) {
+                Pair<String, Integer> tempAnswerScore = javaMostVotedAnswers.get(postElement.getAttribute("ParentId"));
+                if (tempAnswerScore.getValue() < Integer.valueOf(postElement.getAttribute("Score")))
+                    javaMostVotedAnswers.put(postElement.getAttribute("ParentId"),
+                            new Pair<String, Integer>(postElement.getAttribute("Body"), Integer.valueOf(postElement.getAttribute("Score"))));
+            } else
+                javaMostVotedAnswers.put(postElement.getAttribute("ParentId"),
+                        new Pair<String, Integer>(postElement.getAttribute("Body"), Integer.valueOf(postElement.getAttribute("Score"))));
+        }
+    }
 
-        if (requiredAnswers.size() == 0)
-            javaPost.put("No answers found", "");
-        else
-            javaPost.put("Accepted answer", requiredAnswers.get(0));
-        if (requiredAnswers.size() > 1)
-            javaPost.put("Most voted answer", requiredAnswers.get(1));
+    static void writePostsWithRequiredAnswersToFile() throws IOException, ParseException {
 
-        javaPostsWriter.println(javaPost.toString() + "\n");
-        javaPostsWriter.println("========================================================================\n");
+
+        JSONParser parser = new JSONParser();
+        JSONArray javaQuestionsJson = (JSONArray) parser.parse(new FileReader(StackOverFlowJavaPostsFilter.
+                applicationProperties.getProperty("filteredQuestionsFilePath")));
+
+        for (Object javaQuestionJson : javaQuestionsJson) {
+            JSONObject javaPost = new JSONObject();
+            JSONObject javaQuestion = (JSONObject) javaQuestionJson;
+            javaPost.put("Post Id", javaQuestion.get("Post Id"));
+            javaPost.put("Title", javaQuestion.get("Title"));
+            javaPost.put("Descrpition", javaQuestion.get("Description"));
+            javaPost.put("Accepted Answer", javaPostsAnswers.get(javaQuestion.get("AcceptedAnswerId")));
+            if (javaMostVotedAnswers.containsKey(javaQuestion.get("Post Id")))
+                javaPost.put("Most voted Answer", javaMostVotedAnswers.get(javaQuestion.get("Post Id")).getKey());
+            StackOverFlowJavaPostsFilter.javaPostsWriter.println(javaPost.toString() + "\n");
+        }
     }
 }

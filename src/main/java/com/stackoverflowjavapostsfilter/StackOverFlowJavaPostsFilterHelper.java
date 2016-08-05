@@ -79,7 +79,6 @@ class StackOverFlowJavaPostsFilterHelper {
         }
         if (jsonResponse.getInt("quota_remaining") == 0) {
             LOGGER.info("Reached per day quota limit...");
-            StackOverFlowJavaPostsFilter.isRatelimitReached = true;
         }
         if (mostVotedAnswerIndex != acceptedAnswerIndex)
             requiredAnswers.add(answersJson.getJSONObject(mostVotedAnswerIndex).getString("body"));
