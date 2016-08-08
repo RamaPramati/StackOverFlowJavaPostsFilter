@@ -20,7 +20,7 @@ Tags="&lt;c\#&gt;&lt;datetime&gt;&lt;datediff&gt;&lt;relative-time-span&gt;"....
 &lt;row Id="12" PostTypeId="2" ParentId="11" .....Score="278"
 Body="”....&gt;
 
-It contains all questions and answers related of stackoverflow posts. To
+It contains all questions and answers related to stackoverflow posts. To
 differentiate between questions and answers they used *PostTypeId*. If it
 is “1” then it is a question, in case of “2” it is an answer.
 
@@ -64,17 +64,16 @@ and collecting filtered question's details, related accepted answers and most vo
 a\. If the post is a question (*PostTypeId="1"*) it asks the
 *JavaPostsFilter* to check whether the given question is related to java
 by giving its details (Tag, Title). If then it saves the question's
-details (Id, Title, Body) into *javaPosts* map, And adds the
-question's accepted answer id (AccepetdAnswerId) to *acceptedAnswerIds* list.
+details (Id, Title, Body) into *javaPosts* map. And also it adds the
+question's accepted answer id (AccepetdAnswerId) to *acceptedAnswerIds* list and question's id (Id) to *javaPostIds* list for further mapping.
 
-b\. Else if post is an answer (*PostTypeId="2"*) and *acceptedAnswerIds* contains
+b\. Else if the post is an answer (*PostTypeId="2"*) and *acceptedAnswerIds* contains
 the post id (Id) then it saves the post id (Id) with the answer (Body) into
 *javaPostsAnswers* map.
 
-c\. Else if post is an answer and *javaPostIds* contains that post's question id (ParentId), then it saves the post's question id (ParentId) with its score (Score) and answer (Body) into *javaMostVotedAnswers* map. While saving, it checks if there is an entry already exists in the map with the current post's question id(ParentId). if then it checks both entry's scores and overwrites it if the new one's score is more than the existed one's score, else ignores it.
+c\. Else if the post is an answer and *javaPostIds* contains that post's question id (ParentId), then it saves the post's question id (ParentId) with its score (Score) and answer (Body) into *javaMostVotedAnswers* map. While saving, it checks if there is an entry already exists in the map with the current post's question id (ParentId). if exists it checks both entry's scores and overwrites it, in the case of new one's score is more than the existed one's score, else ignores it.
 
-*3. JavaPostsFileWriter:* Responsible for writing questions with
-required answers in the output file.
+*3. JavaPostsFileWriter:* Responsible for writing questions with required answers in the output file.
 
 It creates a JSON object with, each question's details in *javaPosts* map, particular question's accepted answer (By taking from *javaPostsAnswers* map) and particular question's most voted answer (By taking from *javaMostVotedAnswers* map). Then it writes the resulted JSON object into given output file.
 
