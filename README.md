@@ -37,7 +37,7 @@ Output file contains a list of JSON objects. Each JSON object contains a
 java questions with accepted answer and most voted answer.
 
 We can cross verify our results using
-*http://api.stackexchange.com/2.2/questions/<postId>/answers?order=desc&sort=activity&site=stackoverflow*
+*http://api.stackexchange.com/*
 
 application.properties file setup:
 
@@ -64,7 +64,7 @@ c\. After completion of parsing it initiates writing questions with their
 required answers into output file with the help of *JavaPostsFileWriter*.
 
 *2. StackOverFlowPostsParser:* Responsible for parsing the given file
-and getting question's details, accepted answers and most voted answers.
+and collecting filtered question's details, related accepted answers and most voted answers.
 
 While parsing, it is doing following steps for every parsed post,
 
