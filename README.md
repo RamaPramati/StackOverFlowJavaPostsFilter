@@ -1,6 +1,6 @@
 Description:
 
-This project is for getting all java questions with thier accepted
+This project is for getting all java questions with their accepted
 answers and most voted answers which are having "how" in their title
 from stackoverflow.com
 
@@ -8,7 +8,7 @@ Prerequisites:
 
 Get all posts in stackoverflow.com from
 https://archive.org/details/stackexchange. All posts are in the form of
-one large (arround 50GB) xml file (Posts.xml). We can use *xml\_split* for
+one large (around 50GB) xml file (Posts.xml). We can use *xml\_split* for
 splitting the above file if needed.
 
 Posts.xml file format:
@@ -32,7 +32,7 @@ Project's Input:
 
 The Posts.xml file which is downloaded from above link.
 
-Project's Ouput:
+Project's Output:
 
 Output file contains a list of JSON objects. Each JSON object contains a
 java questions with accepted answer and most voted answer. We can cross verify our results using
@@ -63,7 +63,7 @@ and collecting filtered question's details, related accepted answers and most vo
 
 a\. If the post is a question (*PostTypeId="1"*) it asks the
 *JavaPostsFilter* to check whether the given question is related to java
-by giving its details (Tag, Title). If then it saves the quesiton's
+by giving its details (Tag, Title). If then it saves the question's
 details (Id, Title, Body) into *javaPosts* map, And adds the
 question's accepted answer id (AccepetdAnswerId) to *acceptedAnswerIds* list.
 
