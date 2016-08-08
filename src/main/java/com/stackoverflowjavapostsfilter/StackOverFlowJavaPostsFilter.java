@@ -11,6 +11,8 @@ import java.util.Properties;
 import java.util.logging.Logger;
 
 /**
+ * Gets all java posts which are having "how" in their title from stackoverflow.com
+ *
  * Created by ramakrishnas on 28/7/16.
  */
 public class StackOverFlowJavaPostsFilter {
@@ -36,10 +38,12 @@ public class StackOverFlowJavaPostsFilter {
                 LOGGER.info("No files in the given directory");
                 return;
             }
+
             for (File postsFile : postsFiles) {
                 LOGGER.info("Processing file " + postsFile);
                 parser.parse(postsFile, handler);
             }
+
             JavaPostsFileWriter.writePostsWithRequiredAnswersToFile();
         } catch (SAXException saxException) {
             LOGGER.info("Failed to parse xml..." + saxException.getMessage());

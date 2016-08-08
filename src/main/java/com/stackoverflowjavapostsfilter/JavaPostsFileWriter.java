@@ -2,18 +2,18 @@ package com.stackoverflowjavapostsfilter;
 
 import org.json.simple.JSONObject;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Writes posts with required answers to StackOverFlowJavaPosts.txt file
+ *
  * Created by ramakrishnas on 29/7/16.
  */
 class JavaPostsFileWriter {
-    static Map<String, Map<String,String>> javaPosts = new HashMap<String, Map<String,String>>();
 
     static void writePostsWithRequiredAnswersToFile() {
 
-        for (Map.Entry<String, Map<String,String>> javaPost: javaPosts.entrySet()) {
+        for (Map.Entry<String, Map<String,String>> javaPost: StackOverFlowPostsParser.javaPosts.entrySet()) {
             JSONObject javaPostWithRequiredAnswers = new JSONObject();
             Map<String,String> postDetails = javaPost.getValue();
             javaPostWithRequiredAnswers.put("Post Id", postDetails.get("Post Id"));
