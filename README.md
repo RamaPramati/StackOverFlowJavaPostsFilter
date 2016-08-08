@@ -8,7 +8,7 @@ Prerequisites:
 
 Get all posts in stackoverflow.com from
 https://archive.org/details/stackexchange. All posts are in the form of
-one large(arround 50GB) xml file(Posts.xml). We can use *xml\_split* for
+one large (arround 50GB) xml file (Posts.xml). We can use *xml\_split* for
 splitting the above file if needed.
 
 Posts.xml file format:
@@ -38,12 +38,11 @@ Output file contains a list of JSON objects. Each JSON object contains a
 java questions with accepted answer and most voted answer.
 
 We can cross verify our results using
-*http://api.stackexchange.com/2.2/questions/&lt;post
-Id&gt;/answers?order=desc&sort=activity&site=stackoverflow*
+*http://api.stackexchange.com/2.2/questions/&lt;postId&gt;/answers?order=desc&sort=activity&site=stackoverflow*
 
 application.properties file setup:
-
-stackOverFlowPostsDirectory = &lt;input directory path(Posts.xml)&gt;
+// path for Posts.xml file
+stackOverFlowPostsDirectory = &lt;input directory path&gt;
 
 filteredPostsFilePath = &lt;output file path&gt;
 
@@ -70,32 +69,28 @@ and getting question's details, accepted answers and most voted answers.
 
 While parsing it is doing following steps for every parsed post,
 
-a\. If the post is a question(*PostTypeId="1"*) it asks the
+a\. If the post is a question (*PostTypeId="1"*) it asks the
 *JavaPostsFilter* to check whether the given question is related to java
-by giving its details(Tag, Title). If then it saves the quesiton's
-details(Id, Title, Body) in to a *javaPosts* map. And it also adds the
+by giving its details (Tag, Title). If then it saves the quesiton's
+details (Id, Title, Body) in to a *javaPosts* map. And it also adds the
 quesiton's AccepetdAnswerId to *acceptedAnswerIds* list.
 
-b\. If post is an answer(*PostTypeId="2"*) and acceptedAnswerIds contains
-the post id(Id) then it saves the post id(Id) with the answer(Body) into
+b\. If post is an answer (*PostTypeId="2"*) and acceptedAnswerIds contains
+the post id (Id) then it saves the post id (Id) with the answer (Body) into
 *javaPostsAnswers* map.
 
-c\. If post is an answer and acceptedAnswerIds not contains the post
-Id(Id), then it saves the post's question id (ParentId) with its
-score(Score) and answer(Body) into *javaMostVotedAnswers* map. While
-saving, it checks if there is an entry already in the map with the
-current post's question id(ParentId), then it checks both entry's scores
+c\. If post is an answer and acceptedAnswerIds not contains that post
+Id (Id), then it saves the post's question id (ParentId) with its
+score (Score) and answer (Body) into *javaMostVotedAnswers* map. While
+saving, it checks if there is an entry already exists in the map with the
+current post's question id(ParentId), if then it checks both entry's scores
 and overwrites it if the new one's score is more than the existed one's
-Score.
+score.
 
 *3. JavaPostsFileWriter:* Responsible for writing questions with
 required answers in the output file.
 
-It first creates the JSON object with the questions's details by taking
-from *javaPosts* map, add its accepted answer from *javaPostsAnswers*
-map and also add its most voted answer from *javaMostVotedAnswers*
-map(if any). Then it writes the resulted JSON object into the output
-file.
+It creates a JSON object for each question's details in *javaPosts* map, particular question's accepted answer taken from *javaPostsAnswers* map, and particular question's most voted answer taken from *javaMostVotedAnswers* map (if any). Then it writes each resulted JSON object into the given output file.
 
 *4. JavaPostsFilter:* Responsible for filtering java questions which are
 having “how” in their title.
