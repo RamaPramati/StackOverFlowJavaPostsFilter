@@ -23,11 +23,11 @@ class JavaPostsFileWriter {
             javaPostWithRequiredAnswers.put("Post Id", postDetails.get("Post Id"));
             javaPostWithRequiredAnswers.put("Title", postDetails.get("Title"));
             javaPostWithRequiredAnswers.put("Description", postDetails.get("Description"));
-            JSONObject acceptedAnswerJson = getCodeSnippetsSeparatedJson(StackOverFlowPostsParser.javaPostsAnswers.get
+            JSONObject acceptedAnswerJson = getCodeSnippetsSeparatedAnswer(StackOverFlowPostsParser.javaPostsAnswers.get
                     (postDetails.get("AcceptedAnswerId")));
             javaPostWithRequiredAnswers.put("Accepted Answer", acceptedAnswerJson);
             if (StackOverFlowPostsParser.javaMostVotedAnswers.containsKey(postDetails.get("Post Id"))) {
-                JSONObject mostVotedAnswerJson = getCodeSnippetsSeparatedJson(StackOverFlowPostsParser.javaMostVotedAnswers.get
+                JSONObject mostVotedAnswerJson = getCodeSnippetsSeparatedAnswer(StackOverFlowPostsParser.javaMostVotedAnswers.get
                         (postDetails.get("Post Id")).getKey());
                 javaPostWithRequiredAnswers.put("Most voted Answer", mostVotedAnswerJson);
             }
@@ -35,7 +35,7 @@ class JavaPostsFileWriter {
         }
     }
 
-    private static JSONObject getCodeSnippetsSeparatedJson(String answerWithCode) {
+    private static JSONObject getCodeSnippetsSeparatedAnswer(String answerWithCode) {
         String answer = "";
         int codeSnippetCount = 0;
         JSONObject answerJson = new JSONObject();
